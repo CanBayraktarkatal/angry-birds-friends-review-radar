@@ -374,9 +374,11 @@ AGGREGATE STATS:
 
     msg = client.messages.create(
         model=MODEL,
-        max_tokens=2500,
+        max_tokens=8000,
         messages=[{"role": "user", "content": prompt}],
     )
+    if msg.stop_reason == "max_tokens":
+        print("  ! brief hit the token limit and may be truncated")
     return msg.content[0].text
 
 
