@@ -1,94 +1,95 @@
-# LiveOps Brief — Angry Birds Friends — App Store — 2026-08-28
+# LiveOps Brief — Angry Birds Friends — App Store — 2026-11-16
 
-_Source: [App Store](https://apps.apple.com/us/app/angry-birds-friends/id555936735) · 2171 new reviews this run · 4342 classified in total_
+_Source: [App Store](https://apps.apple.com/us/app/angry-birds-friends/id555936735) · 2174 new reviews this run · 4345 classified in total_
 
-# LiveOps Brief — Angry Birds Friends | App Store | 90-Day Window
+# LIVEOPS BRIEF — ANGRY BIRDS FRIENDS (APP STORE, 90-DAY WINDOW)
 
 ---
 
 ## 1. HEADLINE
 
-Build health has deteriorated sharply in v14.6.0, and when stacked on top of entrenched pay-to-win perception and punishing difficulty spikes, the game is actively converting its most loyal segment — veterans — into churners.
+Bugs and aggressive monetisation signals are actively driving churn from your most valuable players, while the ad experience is alienating the mid-funnel segment most likely to convert.
 
 ---
 
 ## 2. TOP 3 PLAYER PAIN POINTS
 
-### Pain Point 1 — Build Instability & Reward Loss (bugs_performance)
-**Evidence:** bugs_performance is the single largest negative-review driver: 28 of the 54 one-star and 18 two-star reviews flag it. Average rating for the theme is 1.5 — the lowest in the dataset. The longest critical reviews cite two distinct failure modes in v14.6.0: Blues Tower progress wiping unexpectedly, and in v14.5.0: game freezes paired with lost coins and vanished rewards. v14.6.0 has already pulled the overall version rating down to 3.13 from 3.96 on v14.5.0 with only 30 reviews filed — a meaningful early signal given the review-lag typical on the App Store.
+### Pain Point 1 — Build Instability (bugs_performance)
+**Evidence:** bugs_performance is the single largest negative theme: 21 of 27 reviews in that theme sit in 1–2 stars, giving it the second-lowest theme rating at 1.93. The longest critical reviews include two separate accounts of a persistent loading bug introduced in 14.6.0 that survived reinstall and was still present in later versions. The theme volume held or grew across 14.6.0 → 14.7.0 → 14.8.0, suggesting no meaningful fix shipped.
 
-**Hypothesis:** The Blues Tower state-save and the coin/reward ledger have regressions introduced in the 14.5→14.6 release cycle. Players who experience reward loss don't just churn — they leave hostile reviews that suppress organic installs.
+**Hypothesis:** A regression introduced in 14.6.0 (likely around app initialisation or asset loading) was never fully resolved and is causing hard blocks for a subset of devices or OS versions. This is the highest-urgency issue because a player who cannot open the app generates zero revenue and zero retention.
 
-**Lever: Build Health**
-Immediate hotfix prioritisation on Blues Tower persistence and coin-ledger integrity. Ship a v14.6.1 targeting both. Pair with a proactive in-game message and a modest goodwill reward (e.g., Bird Coins) to players on affected versions before they reach the review prompt. Do not wait for the next scheduled release.
-
----
-
-### Pain Point 2 — Difficulty Spikes Perceived as Monetisation Pressure (progression_difficulty)
-**Evidence:** 14 of the 70 one-or-two-star reviews cite progression/difficulty; average rating for the theme is 1.62. The qualitative signal is consistent and specific: reviewers describe difficulty as "absurd," "manipulative," and designed to force power-up purchases — not organic challenge. One veteran review explicitly states levels became impossible *even with power-ups* after a recent change. Two reviews from players who identify as having disabilities (autism, anxiety) note the difficulty as a reason they deleted the app — an accessibility and goodwill signal worth flagging independently.
-
-**Hypothesis:** Recent tournament level difficulty calibration has overshot, either through deliberate tuning or an unintended consequence of bird-level balancing in the Feathers track. The combination of high difficulty + power-up resets on restart (called out explicitly in a v14.6.0 review) creates a compounding frustration loop that reads as predatory regardless of intent.
-
-**Lever: Difficulty Pacing + Reward Curve**
-Audit the last two tournament cycles' level completion rates by league tier. If sub-50% completion exists in mid-tiers (Diamond and below), that is a calibration problem. Fix the power-up reset-on-restart behaviour as an immediate build change. Separately, test a difficulty relief valve: a "practice attempt" with no leaderboard consequence available once per tournament day.
+**LiveOps lever: Build health.** Escalate to engineering immediately with device/OS segmentation from crash logs. Ship a hotfix; follow with a re-engagement push notification and a goodwill reward (Bird Coins or a free power-up) to affected users who churned silently.
 
 ---
 
-### Pain Point 3 — Pay-to-Win Perception in Tournaments (monetization + tournaments_fairness)
-**Evidence:** Monetisation averages 2.17 stars across 12 reviews, with 8 appearing in the 1–2 star band. Tournaments_fairness scores 2.0 across 2 reviews. The longest critical reviews are explicitly about tournament unfairness: paying players achieve scores free players cannot reach, and power-up economics are described as exploitative. Veteran reviewers (4 of 25 veteran reviews hit monetisation) are the most vocal, framing it as a trust violation after years of spending.
+### Pain Point 2 — Ad Volume and Ad Quality
+**Evidence:** ads is the third-largest negative theme (12 of 16 reviews in 1–2 stars, avg rating 2.12). Critical reviews cite two distinct but compounding problems: (a) ads triggered by every tap, described as "excessively long and frequent," and (b) unsolicited gambling-themed creatives served without consent. Both are present across 14.6.0 and 14.7.0.
 
-**Hypothesis:** The current power-up price points and per-use scoring uplift create a visible score ceiling that free and low-spend players can observe on the leaderboard, directly signalling that their placement is pre-determined by wallet. This is a fairness perception problem regardless of whether the underlying economics are technically "fair."
+**Hypothesis:** Ad mediation is configured for fill-rate maximisation rather than frequency-capped, session-aware delivery. The gambling creative issue points to a category filter gap in your mediation stack (or a network partner not honouring exclusion rules). Together they create a hostile session experience for non-payers, the audience most dependent on the ad-supported path.
 
-**Lever: Matchmaking + Offer Pressure**
-The lever here is matchmaking design, not price. Test bracket segmentation by average power-up usage per tournament (a proxy for spend propensity) rather than pure score-tier matching. Players competing against similarly-equipped opponents reduces the perceived gap. Also review whether the offer cadence (timing of power-up upsell prompts relative to a near-miss score) is set aggressively enough to generate the "manipulative" read in reviews.
+**LiveOps lever: Offer pressure / build health.** Tighten ad frequency caps at the session level (test: max 2 interstitials per session). Submit a creative category block for gambling/wagering content across all mediation partners immediately — this is also a potential regulatory exposure in markets like the UK and Germany, which together represent your second- and third-largest review markets.
+
+---
+
+### Pain Point 3 — Pay-to-Win Perception in Tournaments
+**Evidence:** monetization and tournaments_fairness together account for 9 of the longest critical reviews and carry the two lowest theme ratings in the dataset (monetization 1.43, tournaments_fairness 1.50). Specific mechanics called out: power-ups resetting on restart forcing repurchase, payers achieving unreachable scores, and a perceived rigged prize wheel. A self-identified veteran high-spender stated they are quitting due to pay-to-win design — a rare and high-signal churn indicator.
+
+**Hypothesis:** The current tournament scoring system does not cap or balance power-up usage, so spend-to-score conversion is linear and visible in leaderboards. When non-payers can see the score gap created by power-up stacking, they read it as unfair by design rather than optional progression. The prize wheel language reinforces this distrust. The tournament format change to daily (shorter, fewer rewards) compounds the perception: less time, less reward, same spend pressure.
+
+**LiveOps lever: Reward curve + event calendar + matchmaking.** Three sub-actions: (1) Reintroduce at least one longer-format (2-day) tournament per week to address the explicit request from veterans. (2) Test a power-up-limited tournament bracket where score reflects skill, not spend. (3) Audit prize wheel probability tables for disclosure compliance and consider surfacing odds — this is legally mandated in several EU markets and reduces distrust as a side effect.
 
 ---
 
 ## 3. VETERAN VS NEW PLAYER READ
 
-**Caveat up front:** 208 of 240 reviews have unknown tenure. The veteran cohort is 25 reviews; new is 2; returning is 5. Any pattern described here is directional at best — do not use it to drive hard segmentation decisions without behavioural data from your analytics stack.
+**Caveat first:** Tenure is classifiable for only 19 of 149 reviews (veterans: 9, returning: 7, new: 3; 130 are unknown). No statistically reliable conclusions can be drawn. The directional signals below are illustrative, not actionable on their own.
 
-**With that caveat stated:**
+**What the thin data suggests:**
+- Veterans (avg rating 2.89) are skewing negative. Their themes cluster on economy_rewards, live_events, and progression_difficulty — consistent with long-tenured players who have absorbed the content ceiling and are now most sensitive to perceived value erosion (shorter tournaments, lighter rewards, power-up cost).
+- New players (avg rating 4.33, n=3) rate highest and show minimal negative themes. This is expected — they have not yet hit the difficulty wall or the spend pressure inflection point.
+- Returning players (avg rating 3.29) land in the middle, with bugs and ads as their primary complaints, suggesting they came back for the game but are being pushed out by technical and ad friction rather than monetisation.
 
-Veterans (avg 3.0 stars) are meaningfully more negative than the overall average (3.7). Their complaints cluster around monetisation (4 reviews), bugs (4 reviews), progression difficulty (4 reviews), and live events (2 reviews) — a spread that suggests long-tenure players are experiencing the game across all its systems and finding multiple things broken or unfair. The qualitative tone is one of betrayal: phrases like "ripping off," "12 years of stagnant content," and "I'm done" appear in veteran-attributed reviews.
-
-New players (2 reviews, both 5-star praise) tell us nothing statistically useful. Do not read their 5.0 average as a signal of new-player health.
-
-Returning players (5 reviews, avg 2.6) skew negative and mention bugs and monetisation, but the sample is too thin to characterise with confidence.
-
-**Practical read:** Veterans are the cohort most likely to leave detailed, negative reviews and most likely to have spent money — making their churn both a revenue and an organic-acquisition risk (negative word-of-mouth). New player sentiment is unreadable from this dataset alone.
+**Honest assessment:** The tenure split is too thin to build a strategy on. Prioritise instrumentation to tag review tenure more reliably, or cross-reference with internal cohort data before segmenting LiveOps communications by tenure.
 
 ---
 
 ## 4. RETENTION RISK
 
-**Churn signal:** The dataset flags 18.8% churn risk across the review sample. The version-rating drop from 3.96 (v14.5.0, 160 reviews) to 3.13 (v14.6.0, 30 reviews) is the most actionable leading indicator: early reviews on a new version tend to come from engaged players, so a 0.83-point drop from a relatively engaged cohort is a meaningful deterioration, not noise.
+**Churn signal:** 20.1% churn risk flag in the dataset, with a 40.3% negative review share and an average rating of 3.31 — below the App Store visibility threshold (typically cited at ~4.0) where algorithmic featuring becomes materially impaired.
 
-**Highest-risk segment: Veterans with spend history.** The evidence: veteran reviews average 3.0 stars, their complaints span monetisation, bugs, *and* progression simultaneously, and the qualitative language signals intent to quit rather than intent to give feedback. A player who has tolerated a game for years and then writes "I'm done" after a build regression is not expressing a preference — they are announcing exit. This segment disproportionately carries both LTV and social proof (long-tenure players often drive word-of-mouth in casual gaming communities).
+**Most at-risk segment: Mid-to-high tenure non-payers and lapsed spenders.** The evidence:
+- The veteran high-spender explicitly stating they are quitting is the highest-signal single data point in the entire review set. When a paying veteran exits citing monetisation pressure, it signals the value proposition has broken for the segment with the highest LTV.
+- Returning players are encountering a persistent loading bug that blocked them on first install and remains unresolved — a returning player who cannot open the app will not return a third time.
+- The ad-heavy experience primarily punishes free players, who represent the top of the funnel for conversion. If they churn before converting, the payer pipeline narrows.
 
-**Secondary risk:** Players affected by the Blues Tower progress reset. Reward-loss events are among the highest-churn triggers in F2P because they violate the implicit contract of the reward loop. The two identical review summaries about Blues Tower resetting suggest this is a reproducible bug hitting a non-trivial portion of active players, not an edge case.
-
-**What the data cannot tell us:** Whether the 18.8% churn-risk figure reflects active uninstalls, lapsed sessions, or review-sentiment scoring — treat it as a sentiment-derived proxy, not a DAU/MAU read.
+**Version trend note:** Ratings improved from 14.6.0 (3.03) to 14.8.0 (3.60), then dipped to 3.48 in 14.9.0. The sample is small (21 reviews on 14.9.0) but worth monitoring — if the trend resumes downward, 14.9.0 introduced something players dislike.
 
 ---
 
 ## 5. RECOMMENDED NEXT TESTS
 
-### Test 1 — Blues Tower Continuity Guarantee
-**Hypothesis:** Players who experience a Blues Tower reset lose trust in the reward system and are disproportionately likely to churn within 7 days.
-**Change:** (a) Ship the persistence fix in v14.6.1. (b) For players who triggered the reset bug (identifiable via server logs), deliver an automatic in-game compensation package before they next open the app — do not require a support ticket.
-**Success metric:** 7-day retention rate for Blues Tower-affected players vs. matched control (players on v14.6.0 who did not hit the bug). Secondary: reduction in 1-star reviews citing reward loss within 14 days of the patch going live.
+### Test 1 — Tournament Format Split
+**Hypothesis:** Players leaving negative reviews about daily tournaments are reacting to perceived reward dilution, not format preference per se. Restoring a longer format with proportionally higher rewards will improve tournament engagement and reduce monetisation-related negative sentiment.
+
+**Change:** A/B test a weekly schedule split: 50% of players see the current daily tournament cadence; 50% see a 2-day tournament running mid-week with a reward pool 1.5× the daily equivalent.
+
+**Success metric:** Tournament completion rate, tournament-driven IAP conversion rate, and 7-day retention for the treated cohort vs control. Secondary: reduction in 1–2 star reviews tagged tournaments_fairness in the following 30-day window.
 
 ---
 
-### Test 2 — Spend-Tier Bracket Matching in Tournaments
-**Hypothesis:** Segmenting tournament brackets by power-up usage (free vs. low-spend vs. high-spend) rather than score alone will reduce pay-to-win perception and improve mid-tier tournament completion rates.
-**Change:** For one tournament cycle, split a subset of Diamond-and-below players into brackets matched on trailing 30-day power-up spend. Keep current matching as control.
-**Success metric:** Tournament completion rate (defined as submitting at least one score) in the test group vs. control. Secondary: review sentiment on monetisation and tournaments_fairness themes in the week following the test tournament. Tertiary: power-up purchase rate — validate that fairness improvement does not come at unacceptable revenue cost.
+### Test 2 — Ad Frequency Cap and Category Filtering
+**Hypothesis:** Reducing interstitial frequency and blocking gambling-category creatives will reduce session abandonment among non-payers without materially impacting ad revenue, because the current configuration is triggering session exits before ad-to-IAP conversion can occur.
+
+**Change:** Cap interstitials at 2 per session for all players (down from current uncapped or high-cap setting). Simultaneously activate a gambling/wagering creative block across all mediation partners. Run for 30 days.
+
+**Success metric:** Session length for non-paying players (primary), day-7 retention for non-payers, and total ad revenue per DAU (to confirm the revenue impact is acceptable). Watch for no-ad complaint theme volume in reviews.
 
 ---
 
-### Test 3 — Difficulty Relief Valve ("Scout Attempt")
-**Hypothesis:** Players who abandon a tournament level after multiple failed attempts without a low-stakes retry option disproportionately churn within the tournament week, and offering one free no-consequence practice attempt per day will reduce that abandonment.
-**Change:** Introduce a "Scout" attempt per tournament day: the attempt is not scored on the leaderboard, power-ups are available at reduced cost (or free at base tier), and it does not consume a life. Gate it so it cannot be used to farm leaderboard scores.
-**Success metric:** Tournament week retention (did the player return on day 2+ of the tournament) in test vs. control. Secondary: average attempts-per-session on the tournament level, as a proxy for engagement vs. frustration. Tertiary: monitor power-up purchase rate to confirm the free attempt increases rather than cannibalises spend by keeping players in the session.
+### Test 3 — Power-Up Reset Friction Reduction
+**Hypothesis:** The laser pointer resetting on restart is read as a punitive monetisation mechanic and is driving both negative reviews and session abandonment mid-level. Persisting the power-up state through restarts (or granting one free retry with power-ups intact) will reduce the pay-to-win perception without meaningfully reducing power-up purchase volume, since the purchase was already made.
+
+**Change:** For one power-up type (laser pointer as the most-cited), persist the activated state through the first restart within a session. No change to purchase mechanics.
+
+**Success metric:** Power-up repurchase rate (ensure it does not collapse, confirming the hypothesis that purchases are frustration-driven rather than deliberate multi-use purchases), level completion rate for levels where this power-up is commonly used, and monetization theme share in reviews for the subsequent 30-day window.

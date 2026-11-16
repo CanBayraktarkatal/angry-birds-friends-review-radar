@@ -1,114 +1,122 @@
-# LiveOps Brief — Angry Birds Friends — Google Play — 2026-08-28
+# LiveOps Brief — Angry Birds Friends — Google Play — 2026-11-16
 
-_Source: [Google Play](https://play.google.com/store/apps/details?id=com.rovio.angrybirdsfriends&hl=en) · 115 new reviews this run · 422 classified in total_
+_Source: [Google Play](https://play.google.com/store/apps/details?id=com.rovio.angrybirdsfriends&hl=en) · 1990 new reviews this run · 820 classified in total_
 
-# LIVEOPS BRIEF — ANGRY BIRDS FRIENDS (GOOGLE PLAY)
-**Window:** 90 days | **Reviews analysed:** 422 | **Avg rating:** 4.02
+# LIVEOPS BRIEF — ANGRY BIRDS FRIENDS
+**Google Play · 90-Day Review Window · 475 reviews · Avg Rating 3.99**
 
 ---
 
 ## 1. HEADLINE
 
-Build instability — specifically game lockups, load failures, and crash-on-ad sequences — is the single largest driver of 1-star reviews and commands by far the most community validation (1,451 + 537 thumbs-up on the top two bug reports alone), making it an active retention emergency that no LiveOps event or offer can paper over.
+Build health is the primary rating killer: bugs and performance complaints concentrated in 14.8.0 carry the highest thumbs-up counts and the lowest theme rating (1.8), and until the ad-reward freeze loop is fixed, every other LiveOps initiative is undermined.
 
 ---
 
 ## 2. TOP 3 PLAYER PAIN POINTS
 
-### Pain Point 1 — Game freezes, load failures, and crash-on-ad progress loss
+### Pain Point 1 — Game freezes, fails to load, and crashes (especially in 14.8.0)
 **Evidence:**
-- `bugs_performance` is the #1 negative theme: 31 of 82 low-star reviews (38%) cite it.
-- Average rating for the theme is **1.83** — the lowest of any category.
-- The two most-upvoted reviews in the entire dataset are both bug reports: 1,451 thumbs-up (recurring lockup, veteran, 14.5.0) and 537 thumbs-up (game not loading, 14.6.0). No other review is within an order of magnitude of these signals.
-- A specific failure pattern recurs across multiple upvoted reviews: **freeze after watching a rewarded ad**, resulting in loss of both the ad reward and match progress. This has been reported across 14.5.0 and 14.6.0, and at least one veteran explicitly states it has persisted for years.
-- 14.6.0 improved average rating (4.26 vs 4.05 for 14.5.0), but bug reports continue to surface under the new version, so the fix is incomplete.
+- `bugs_performance` is the dominant negative theme: 40 of 107 negative reviews (1–2 star), theme avg rating 1.8.
+- The single most socially validated review has 537 thumbs-ups ("game is not loading again," 14.6.0), signalling this predates 14.8.0 and has not been resolved across releases.
+- Seven of the fifteen most-upvoted reviews describe freeze/crash/load failures, with the majority on 14.8.0 specifically. Combined thumbs-up total on freeze/crash reviews exceeds 180, dwarfing every other issue cluster.
+- 14.7.0 avg rating dropped to 3.55 from 4.43 in 14.6.0; 14.8.0 partially recovered to 4.03 but the freeze complaints concentrated there remain the loudest signal in the dataset.
 
 **Hypothesis for fix:**
-The ad-then-freeze loop points to a specific handoff failure between the ad SDK and the game session state — likely a race condition on ad completion callback that kills the session rather than resuming it. A targeted fix to session-state persistence (save state *before* ad is called, restore on return regardless of ad outcome) would close the most rage-inducing failure mode.
+The freeze is reproducible and tied to the ad-reward flow (rewarded ads that complete but do not deliver bonuses, uncloseable ad units forcing full restarts). This is a **build health** issue, not a design issue. A targeted hotfix scoped to the ad SDK integration and reward-delivery callback should stop the bleed. The 537-thumbs review ("not loading again") suggests a persistent session-restore or asset-loading regression that may be a separate but related root cause.
 
-**LiveOps lever: Build health.**
-This is not a LiveOps calendar or reward problem. Until the ad-freeze crash is patched and confirmed fixed at scale, every rewarded-ad placement in the event and offer stack is actively destroying trust. Escalate to engineering as P0. LiveOps mitigation in the interim: suppress rewarded-ad placements at tournament score screens and end-of-level high-stakes moments until the fix ships.
+**LiveOps lever: Build Health**
+Prioritise an emergency point release ahead of the next tournament cycle. Until the ad-reward flow reliably delivers earned bonuses, every rewarded-ad placement is actively destroying trust in the reward curve.
 
 ---
 
-### Pain Point 2 — Monetization perceived as pay-to-win and financially exploitative
+### Pain Point 2 — Ad experience is punishing and breaks the game loop
 **Evidence:**
-- `monetization` averages **2.25** stars; it appears in 10 of 82 low-star reviews.
-- The most-upvoted monetization review (7 thumbs-up, score 1) explicitly cites **$50–$100/week** spend required to be competitive — framing this as a tournament fairness issue, not just a cosmetic spend objection.
-- A second monetization review (4 thumbs-up, score 1) flags dark patterns: confusing UI causing accidental coin spend, and inconsistent physics — language that suggests the perceived unfairness extends to feeling the core loop itself is manipulated.
-- A new player (5 stars, 6 thumbs-up) notes "slight pay-to-win elements" even in a positive review, indicating the perception is broad, not limited to dissatisfied players.
-- `tournaments_fairness` averages **2.0** stars and overlaps thematically — players are experiencing monetization pressure specifically inside competitive modes.
+- `ads` theme avg rating: 2.23. 14 of 22 ad reviews are in the 1–2 star band.
+- Two high-thumbs reviews describe: (a) ads that cannot be closed, requiring a full game restart (26 thumbs), and (b) the ad-reward flow redirecting to Google Play and losing earned power-ups, combined with unwanted login prompts (5 thumbs).
+- The freeze-during-ads complaint (60 thumbs, 14.7.0) bridges the bugs and ads themes — the ad unit itself is the trigger for the freeze.
 
 **Hypothesis for fix:**
-Tournament matchmaking is placing free-to-play players against heavily monetised opponents (levelled-up birds, power-up stacks), making spend feel mandatory rather than optional. Separating matchmaking pools by bird-level bracket or power-up usage flag would reduce the perceived pay-to-win surface without removing spend as an accelerant.
+The current rewarded-ad implementation is both technically broken (non-delivering rewards) and behaviourally punishing (uncloseable units, forced restarts). Players are attempting to engage with a voluntary value-exchange mechanic and being penalised for it. This is simultaneously a **build health** and **offer pressure** problem. Even if the technical fix is in flight, the LiveOps mitigation is to reduce forced/interstitial ad frequency immediately and gate any rewarded-ad placement behind a client-side health check that confirms reward delivery before the ad fires.
 
-**LiveOps lever: Matchmaking + offer pressure.**
-Test a power-up-free tournament bracket (see Section 5). Separately, audit every coin-spend confirmation UI for accidental-purchase vectors and add a one-tap undo within 5 seconds — this directly addresses the "confusing UI wastes coins" complaint and reduces CS load.
+**LiveOps lever: Build Health (primary) / Offer Pressure (secondary)**
+Consider a temporary reduction in ad-slot frequency in the next tournament push while the SDK fix is validated. Rewarded ads that consistently fail to pay out are worse than no ads — they create negative association with the voluntary engagement loop.
 
 ---
 
-### Pain Point 3 — Difficulty spikes perceived as artificial and progression-blocking
+### Pain Point 3 — Tournament content feels repetitive and skill-based fairness has eroded
 **Evidence:**
-- `progression_difficulty` averages **2.4** stars; 5 of its 10 total reviews are in the 1–2 star band.
-- One upvoted review (4 thumbs-up, score 1) cites "frustratingly nonsensical level design" as the trigger for a rage-quit after one week — indicating this hits early enough to damage new-player retention.
-- A separate upvoted review (40 thumbs-up) calls out "difficulty changes" post-update alongside loading issues, suggesting a 14.5.0 or 14.6.0 patch altered level difficulty in a way players noticed negatively.
-- The theme is low-volume (10 reviews) so confidence is moderate, but the rating floor and the explicit rage-quit narrative make it worth tracking.
+- `tournaments_fairness` has the lowest avg rating in the entire dataset: **1.0** across 5 reviews, all in the 1–2 star band.
+- The second most-upvoted review (99 thumbs, veteran, 14.8.0): "repetitive and uninspired tournament content compared to past themed events like Star Wars."
+- The sixth most-upvoted review (32 thumbs, veteran, 14.9.0): "rigged physics and anchored pigs have destroyed tournament skill-based gameplay."
+- `live_events` theme avg rating: 2.0. Though only 4 reviews, 3 are in the 1–2 star band.
 
 **Hypothesis for fix:**
-A difficulty rebalance in one or more recent updates created unfair spikes that are not matched by the reward curve, making the spend-or-fail moment feel punitive. Introducing a soft-difficulty assist (e.g., a free hint or one free power-up on the third consecutive fail of the same level) would reduce abandonment without removing challenge for players who clear first-try.
+The tournament calendar has drifted from its differentiated, IP-themed identity toward generic or repeated formats. Simultaneously, structural level changes (anchored pigs, physics alterations) are perceived by experienced players as skill-dilution — either to favour power-up spend or to compress score variance for matchmaking purposes. This is an **event calendar** and **difficulty pacing** problem. Reintroducing rotational IP-themed or mechanically novel tournament weeks, and auditing recent physics/structure changes for perceived fairness, would directly address the stated complaints.
 
-**LiveOps lever: Difficulty pacing + reward curve.**
-Identify the specific levels with the steepest post-update drop in clear rates and either rebalance them or introduce a catch-up assist mechanic gated on consecutive fail count.
+**LiveOps lever: Event Calendar / Difficulty Pacing**
+The 99-thumbs review is the highest-thumbs negative signal in the dataset. Its resonance suggests it articulates a widely-held sentiment even if the review count is small.
 
 ---
 
 ## 3. VETERAN VS NEW PLAYER READ
 
-**Data caveat up front:** 392 of 422 reviews (93%) have unknown tenure. Only 15 are tagged veteran, 8 new, and 7 returning. Any tenure-segmented finding carries very low statistical confidence and should be treated as directional signal only, not a basis for large resource commitments.
+**Tenure data caveat:** 436 of 475 reviews (91.8%) have unknown tenure. The identified tenure groups are very small — veterans: 17, returning: 14, new: 8. No statistically reliable conclusions can be drawn from these counts. The directional read below is hypothesis-generating only, not decision-grade.
 
-**With that caveat stated, what the thin data suggests:**
+**Directional signal (treat with caution):**
+- Veteran avg rating: **2.06** vs new: **4.25** vs returning: **4.36**. The gap is large and consistent with the qualitative content, but the small n means a handful of angry long-tenured players could account for the entire spread.
+- Veteran theme breakdown (17 reviews): bugs_performance (3), economy_rewards (3), tournaments_fairness (2), monetization (2), praise (3). Veterans are uniquely concentrated on economy/reward degradation and tournament fairness — themes almost absent from new and returning player reviews.
+- New and returning players skew heavily toward praise with minimal complaints, which likely reflects honeymoon-period sentiment rather than sustained satisfaction.
 
-| Segment | Avg Rating | Primary Complaints |
-|---|---|---|
-| Veteran (n=15) | 3.33 | Bugs/performance (4 reviews), live events (1), progression (1) |
-| New (n=8) | 3.25 | Monetization (2), bugs (1), UX (1) |
-| Returning (n=7) | 5.0 | Praise only |
-
-**Directional read:**
-- **Veterans** are more likely to raise bugs and performance as their primary grievance — consistent with the 1,451-thumbs-up review from a long-term player describing a lockup "never properly fixed." Their lower rating despite loyalty suggests tolerance is eroding, not holding.
-- **New players** skew toward monetization friction early in the funnel — they notice pay-to-win signals fast, which aligns with the rage-quit review after one week citing tournament unfairness.
-- **Returning players** rate the game 5.0 and leave only praise — this is almost certainly self-selection (people who come back and enjoy it bother to review; those who return and churn again do not).
-
-**Bottom line:** The tenure split is too thin to support confident segmentation strategy. Instrument in-app review prompts by cohort age to build a usable dataset over the next 90 days.
+**Practical read:**
+Veterans are churning over structural changes to the game's core loop (economy, tournament integrity, physics). New players are not yet exposed to the long-term reward curve or the competitive tournament layer where these problems surface. The divergence is real in direction, but the sample is too thin to size the veteran churn risk with confidence.
 
 ---
 
 ## 4. RETENTION RISK
 
-**Churn signal:** 7.8% of reviews are tagged churn-risk. That is a review-derived proxy, not a behavioural metric — treat it as a floor, not a ceiling.
+**Churn risk flag:** 10.1% of reviews tagged as churn risk per the pipeline classification.
 
-**The most credible churn signals in the data:**
+**Highest-risk segment: Long-tenured / high-engagement players**
 
-1. **The ad-freeze bug is directly causing uninstalls.** Two upvoted reviews explicitly state the player uninstalled as a direct result of a crash sequence (scores 1 and 2, combined 6 thumbs-up). The 1,451-thumbs-up veteran review documents years of the same unfixed bug — this is churned players who stayed, and it represents the segment most at risk of finally leaving.
+The clearest churn signals are:
+1. **Veteran players explicitly stating they are leaving or have already left** — the 99-thumbs "long-time player laments" review and the 32-thumbs "destroyed tournament skill-based gameplay" review both read as farewell-tone, not feedback-tone. These players are not asking for fixes; they are recording grievances on the way out.
+2. **Ad-reward loop failures disproportionately hurt engaged players** — a player who never uses rewarded ads is unaffected; a player who relies on earned power-ups to compete in tournaments is repeatedly punished. The engagement-monetization loop is inverting: the more you engage, the more likely you are to hit the broken ad flow.
+3. **Tournament-core players are the economic backbone** — weekly tournament participants are the most likely buyers of power-ups and tournament-specific offers. If tournament fairness perception collapses for this segment, it removes the primary monetization context.
 
-2. **Tournament rage-quits among newer players.** The 1-star review (4 thumbs-up) citing rage-quit after one week of tournament play is a new-player churn signal in its clearest form. If the difficulty-or-pay wall hits within the first week, Day-7 retention is at direct risk.
+**Secondary risk: Mid-funnel players on 14.7.0–14.8.0** — the freeze/crash complaints span these versions broadly and are not tenure-specific. Players who hit a freeze during a good tournament run and lose their score and power-ups face a concrete, immediate quit trigger regardless of tenure.
 
-3. **Veteran erosion.** Veterans rate the game 3.33 — below the overall 4.02 average. Combined with bug complaints that reference multi-year persistence and no developer fix, this group has high accumulated goodwill but declining tolerance. They are unlikely to be the largest churn volume, but they represent long-cycle high-LTV players and their departure will disproportionately affect monetisation.
-
-**Most at-risk segment:** Mid-tenure monetising players who use rewarded ads for power-ups in tournaments. They sit at the intersection of all three pain points: they hit the ad-freeze bug at the highest-stakes moment (tournament run), they face the pay-to-win wall in matchmaking, and they are engaged enough to feel the loss acutely. This segment is not identifiable from review data alone — flag it to the data team for behavioural cohort analysis using ad-view-to-session-end drop-off as the signal.
+**Confidence note:** Overall avg rating of 3.99 is held up by a large 5-star mass (315 of 475 reviews = 66%). The 3.99 headline masks a bimodal distribution where the 1-star cohort (81 reviews, 17%) is loud, socially validated, and complaint-specific. Rating average alone understates the risk.
 
 ---
 
 ## 5. RECOMMENDED NEXT TESTS
 
-### Test 1 — Session-state rescue on ad-completion failure
-**Hypothesis:** Players who experience an ad-freeze crash and lose tournament progress are converting to uninstalls or permanent ad-opt-out at a disproportionate rate. Preserving session state through the ad handoff will reduce crash-driven churn and restore rewarded-ad engagement.
+### Test 1 — Ad-Reward Reliability Recovery
+**Hypothesis:** Players who experience a failed rewarded-ad flow (ad completes but reward is not delivered) churn at a meaningfully higher rate than those who receive rewards reliably; a compensatory soft-currency credit upon failure will reduce that churn.
 
-**Change:** Save full session state (score, power-ups used, bird positions) immediately before the rewarded-ad call is made. On ad SDK return — whether clean completion, timeout, or error — restore to that saved state before applying the reward. In error/timeout cases, grant the reward anyway (goodwill cost is lower than churn cost).
+**Change:** Instrument the reward-delivery callback to detect failure. On confirmed failure, automatically credit the player the equivalent reward (e.g. the power-up they watched the ad to earn) and surface a brief "we topped you up" notification. Run against a control that gets no compensation on failure.
 
-**Success metric:** Rewarded-ad completion rate (no crash) improves; Day-7 and Day-30 retention improves in the treatment cohort; CS tickets citing "lost progress after ad" decline by ≥20% within 30 days.
+**Success metric:** 7-day retention rate for players who encountered at least one ad-reward failure event; secondary metric: rewarded-ad engagement rate in the following session (does trust recover?).
 
 ---
 
-### Test 2 — Power-up-restricted tournament bracket
-**Hypothesis:** Free-to-play players
+### Test 2 — Tournament Theme Novelty Rotation
+**Hypothesis:** Introducing a mechanically or visually distinct tournament theme (legacy IP callback, or a novel structural mechanic not seen in the last 90 days) will increase tournament participation rate and reduce mid-tournament drop-off among players with 30+ days tenure.
+
+**Change:** Replace one standard weekly tournament slot with a "throwback" or novel-mechanic variant — explicitly surfaced as different in the event calendar copy. Measure against a standard-format control week matched for difficulty tier.
+
+**Success metric:** Tournament completion rate (players who submit at least one score vs. players who open the tournament); secondary: avg sessions per player during the tournament week for the 30+ day tenure cohort.
+
+---
+
+### Test 3 — Difficulty Pacing Transparency in Competitive Tiers
+**Hypothesis:** Players who perceive tournament physics as "rigged" are reacting partly to opaque difficulty manipulation (anchored structures, altered pig placement) that feels punitive without explanation; surfacing explicit difficulty-tier labelling will reduce fairness complaints and improve score-submission rates in upper league tiers.
+
+**Change:** Add a visible "difficulty rating" indicator (e.g. a 1–3 star structural complexity label) to tournament level previews in Diamond and above tiers. No change to actual level content. Run against a control with no label.
+
+**Success metric:** 1–2 star review rate tagged to tournaments_fairness in the test cohort (requires review-to-player linkage or in-app sentiment pulse); proxy metric: power-up purchase rate in upper tiers (if fairness perception improves, players may engage with spend rather than quit).
+
+---
+
+*Brief prepared on current 90-day Google Play data. All theme counts and ratings cited directly from the provided dataset. Tenure-based findings are directional only given 91.8% unknown tenure rate. Version-level ratings for versions with fewer than 10 reviews (10.10.2, 11.17.1, 11.19.1, 13.x, 14.1.0, 14.5.0) are excluded from version analysis as single-review noise.*
